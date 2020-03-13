@@ -149,7 +149,7 @@ public class ThermoFactory {
      */
     public static class ThermoImageCenterRectDrawer implements ThermoImageExtraDrawer {
         final int size;
-        final int borderWidth; //
+        final int borderWidth;
         final int borderColor;
 
         /**

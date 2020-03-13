@@ -50,6 +50,16 @@ public interface Thermometer {
     boolean isAvailable();
 
     /**
+     * 获取测温设备版本号
+     */
+    String getVersion() throws Exception;
+
+    /**
+     * 获取环境温度
+     */
+    float getAmbientTemperature() throws Exception;
+
+    /**
      * 获取温度阵列数据帧
      * <p>
      * <code>getTemperatures</code> 不能在主线程调用，因为它可能不会立即返回，正常情况下在它返回之前会一直输出数据帧
