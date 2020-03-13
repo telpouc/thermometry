@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Thermometry</string>
+    <string name="getTemperatureTest">获取温度测试</string>
+</resources>
