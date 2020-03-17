@@ -43,7 +43,9 @@ public interface Thermometer {
     /**
      * 判断测温设备是否可用
      * <p>
-     * 建议只在 app 初始化的时候判断一次，或者在 {@link #getTemperatures} 抛出异常时需要判断再调用
+     * 一般不需要调用，调用测温设备的其它方法时捕获异常即可。
+     * <p>
+     * 如果需要判断建议只在 app 初始化的时候判断一次。
      *
      * @return 如果测温设备可用返回 true，否则返回 false
      */
