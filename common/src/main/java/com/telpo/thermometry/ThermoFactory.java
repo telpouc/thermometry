@@ -239,13 +239,18 @@ public class ThermoFactory {
             int height = size * 10;
             Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
-            canvas.drawColor(-1);
+            //canvas.drawColor(-1);
             Paint paint = new Paint();
+            Rect rect = new Rect();
 
             for(int i = 0; i < size; ++i) {
                 for(int j = 0; j < size; ++j) {
                     paint.setColor(selectTemColor(palette, data[i][j], startTem, endTem));
-                    canvas.drawRect(new Rect(j * 10, i * 10, j * 10 + 10, (i + 1) * 10), paint);
+                    rect.left = j * 10;
+                    rect.top = i * 10;
+                    rect.right = rect.left + 10;
+                    rect.bottom = rect.top + 10;
+                    canvas.drawRect(rect, paint);
                 }
             }
 

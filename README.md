@@ -2,6 +2,8 @@
 
 适用于天波人脸识别终端 TPS967 / TPS980P 机型
 
+![Release](https://jitpack.io/v/telpouc/thermometry.svg)
+
 ## 使用
 * **添加 JitPack 仓库到项目的根 build.gradle**
 <br>Add JitPack repository in your root build.gradle:
