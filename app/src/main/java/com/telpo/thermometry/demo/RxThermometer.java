@@ -1,5 +1,10 @@
 package com.telpo.thermometry.demo;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+
+import androidx.annotation.NonNull;
+
 import com.telpo.thermometry.TemperaturesListener;
 import com.telpo.thermometry.ThermoAlgorithm;
 import com.telpo.thermometry.ThermoFactory;
@@ -7,7 +12,6 @@ import com.telpo.thermometry.ThermoMeasureResult;
 import com.telpo.thermometry.Thermometer;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -20,7 +24,19 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RxThermometer {
     private Thermometer.Factory factory;
-    private static Executor executor = Executors.newSingleThreadExecutor();
+    private static Executor executor = new Executor() {
+        final Handler mHandler;
+        {
+            HandlerThread thread = new HandlerThread(RxThermometer.class.getSimpleName());
+            thread.start();
+            mHandler = new Handler(thread.getLooper());
+        }
+
+        @Override
+        public void execute(@NonNull Runnable command) {
+            mHandler.post(command);
+        }
+    };
 
     private RxThermometer(Thermometer.Factory factory) {
         this.factory = factory;
@@ -60,7 +76,7 @@ public class RxThermometer {
         ThermoMeasureResult result = new ThermoMeasureResult();
         ThermoAlgorithm algorithm;
 
-        public MeasureResultOnSubscribe(ThermoAlgorithm algorithm) {
+        MeasureResultOnSubscribe(ThermoAlgorithm algorithm) {
             this.algorithm = algorithm;
         }
 
@@ -95,5 +111,26 @@ public class RxThermometer {
 
     public Single<ThermoMeasureResult> getMeasureResult() {
         return getMeasureResult(ThermoFactory.createDefaultAlgorithm());
+    }
+
+    private Single<Thermometer> getThermometer() {
+        return Single.create(new SingleOnSubscribe<Thermometer>() {
+            SingleEmitter<Thermometer> emitter;
+            @Override
+            public void subscribe(SingleEmitter<Thermometer> emitter) {
+                this.emitter = emitter;
+                Thermometer thermometer = createThermometer();
+                emitter.setCancellable(thermometer::stop);
+                emitter.onSuccess(thermometer);
+            }
+        }).subscribeOn(Schedulers.from(executor));
+    }
+
+    public Single<String> getVersion() {
+        return getThermometer().map(Thermometer::getVersion);
+    }
+
+    public Single<Float> getAmbientTemperature() {
+        return getThermometer().map(Thermometer::getAmbientTemperature);
     }
 }

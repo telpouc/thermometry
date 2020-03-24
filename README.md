@@ -20,7 +20,7 @@
 <br>Add the dependency:
 ```
     dependencies {
-        implementation 'com.github.telpouc:thermometry:2.0.0'
+        implementation 'com.github.telpouc:thermometry:2.0.1'
     }
 ```
 
